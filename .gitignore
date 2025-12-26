@@ -1,0 +1,8 @@
+.vscode/
+third_party/
+.venv/
+bin/
+__pycache__
+out*
+HiGHS.log
+*.log
