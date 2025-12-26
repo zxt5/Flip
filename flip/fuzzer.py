@@ -59,16 +59,6 @@ def run_fuzzer_worker(
             return inst_generator.generate_feasible_instance()
         elif feasibility == "infeasible":
             return inst_generator.generate_infeasible_instance()
-        # elif feasibility == "paper1":
-        #     if args.mode == "MIP":
-        #         return inst_generator.generate_controllable_mip_instance()
-        #     else:
-        #         return inst_generator.generate_controllable_lp_instance()
-        # elif feasibility == "paper2":
-        #     if args.mode == "MIP":
-        #         return inst_generator.generate_rank_cond_mip_instance()
-        #     else:
-        #         return inst_generator.generate_rank_cond_lp_instance()
         elif feasibility == "random":
             if random.random() < 0.5:
                 return inst_generator.generate_feasible_instance()
@@ -249,8 +239,4 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
-    except Exception:
-        pass
-    main()
+    main()  
