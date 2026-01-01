@@ -7,10 +7,6 @@ OPTIONS = {
 }
 
 def generate_mosek(env=None, msg=True, time_limit=60):
-    import mosek
-    # except ImportError:
-        # raise ImportError("The 'mosek' library is not installed. Please install it to use the MOSEK solver.")
-
     options = {} # dict
     options["MSK_DPAR_MIO_TOL_ABS_GAP"] = 0.0
     options["MSK_DPAR_MIO_TOL_REL_GAP"] = 0.0
