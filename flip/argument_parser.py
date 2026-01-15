@@ -2,7 +2,7 @@ import argparse
 import os
 import time
 
-from flip.config import SOLVERS
+from flip.config import SOLVERS, DEFAULT_SOLVER_UNDER_TEST, DEFAULT_REFERENCE_SOLVER
 
 def parse_arguments(target="fuzzer"):
     parser = argparse.ArgumentParser(
@@ -62,6 +62,15 @@ def parse_arguments(target="fuzzer"):
     )
 
     parser.add_argument(
+        "--reference_solver",
+        "-rs",
+        type=str,
+        default=DEFAULT_REFERENCE_SOLVER,
+        choices=SOLVERS,
+        help=f"Reference solver for infeasiblle instance generation: {', '.join(SOLVERS)}",
+    )
+
+    parser.add_argument(
         "--min_vars_num",
         "-minv",
         type=int,
@@ -114,7 +123,7 @@ def parse_arguments(target="fuzzer"):
         "-sut",
         type=str,
         nargs="+",
-        default=SOLVERS,
+        default=DEFAULT_SOLVER_UNDER_TEST,
         choices=SOLVERS,
         help=f"Solvers under test: {', '.join(SOLVERS)}",
     )

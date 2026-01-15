@@ -1,5 +1,5 @@
 import random
-from pulp.pulp import GUROBI_CMD
+from pulp.pulp import GUROBI_CMD, SCIP_CMD, COIN_CMD, HiGHS_CMD, MOSEK
 from pulp.pulp import LpMinimize, LpProblem, LpInteger, LpContinuous, LpVariable, lpSum, LpConstraint, LpConstraintLE
 from flip.LpInstance import LpInstance
 from flip.utils import solve
@@ -21,6 +21,7 @@ class InstanceGenerator:
                  min_bound_radius: int = 20,
                  max_bound_radius: int = 100,
                  mode: str = 'MIP',
+                 reference_solver: str = "GUROBI_CMD",
                 ):
         self.min_num_vars = min_num_vars
         self.max_num_vars = max_num_vars
@@ -33,6 +34,7 @@ class InstanceGenerator:
         self.min_bound_radius = min_bound_radius
         self.max_bound_radius = max_bound_radius
         self.mode = mode
+        self.reference_solver = reference_solver
 
     def generate_feasible_solution(self,
                                    num_vars: int,
@@ -86,16 +88,28 @@ class InstanceGenerator:
             coeff_matrix.append(coeffs)
         return coeff_matrix
 
-    @staticmethod
-    def generate_objective_function(vars: list, coeff_range = (-500.0, 500.0)):
+    def generate_objective_function(self, vars: list, coeff_range = (-500.0, 500.0)):
         coeffs = []
         for _ in vars:
             coeffs.append(round(random.uniform(*coeff_range), 2))
         return lpSum([coeffs[i] * vars[i] for i in range(len(vars))])
 
-    @staticmethod
-    def generate_feasibility_breaking_constraint(prob: LpProblem) -> LpConstraint:
-        reference_solver = GUROBI_CMD(gapRel=0, gapAbs=0, msg=False, timeLimit=10)
+    def get_reference_solver(self):
+        if self.reference_solver == "GUROBI_CMD":
+            return GUROBI_CMD(gapRel=0, gapAbs=0, msg=False, timeLimit=10)
+        elif self.reference_solver == "SCIP_CMD":
+            return SCIP_CMD(gapRel=0, gapAbs=0, msg=False, timeLimit=10)
+        elif self.reference_solver == "COIN_CMD":
+            return COIN_CMD(gapRel=0, gapAbs=0, msg=False, timeLimit=10)
+        elif self.reference_solver == "HiGHS_CMD":
+            return HiGHS_CMD(gapRel=0, gapAbs=0, msg=False, timeLimit=10)
+        elif self.reference_solver == "MOSEK":
+            return MOSEK(options={"MSK_DPAR_MIO_TOL_ABS_GAP": 0.0, "MSK_DPAR_MIO_TOL_REL_GAP": 0.0}, msg=False, timeLimit=10)
+        else:
+            raise ValueError(f"Invalid reference solver: {self.reference_solver}")
+
+    def generate_feasibility_breaking_constraint(self, prob: LpProblem) -> LpConstraint:
+        reference_solver = self.get_reference_solver()
         result = solve(prob, reference_solver)
         if result.status != "Optimal":
             return None

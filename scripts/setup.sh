@@ -80,4 +80,3 @@ export PYTHONPATH="$ROOT_DIR"
 info "Setup completed successfully!"
 
 info "Run 'flip' to start the fuzzer."
-flip -h

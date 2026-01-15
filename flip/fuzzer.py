@@ -195,6 +195,7 @@ def run_fuzzer_master(args):
         min_sparsity=args.min_sparsity,
         max_sparsity=args.max_sparsity,
         mode=args.mode,
+        reference_solver=args.reference_solver,
     )
 
     start_time = time.time()
@@ -234,7 +235,14 @@ def run_fuzzer_master(args):
 
 def main():
     args = parse_arguments()
-    info(f"Solver under test: {args.solvers_under_test}")
+    info(f"Time to run: {args.time_to_run} hours")
+    info(f"Number of jobs in parallel: {args.jobs}")
+    info(f"Output directory: {args.output_dir}")
+    info(f"Solvers under test: {args.solvers_under_test}")
+    info(f"Reference solver: {args.reference_solver}")
+    info(f"Mode: {args.mode}")
+    info(f"Feasibility: {args.feasibility}")
+
     run_fuzzer_master(args)
 
 
